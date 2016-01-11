@@ -145,14 +145,20 @@ function drawAxis(params, x, y, initialize)
     }//initial
     else
     {
-        this.selectAll("g.x.axis").call(xAxis);
+        this.selectAll("g.x.axis")
+                .transition()
+                .duration(500).ease("bounce")
+                .call(xAxis);
         this.selectAll(".x-axis-label")
                 .style("text-anchor", "end")
                 .attr("dx", -8)
                 .attr("dy", 8)
                 .attr("transform", "translate(0,0) rotate(-45)");
 
-       // this.selectAll("g.y.axis").call(y);
+        this.selectAll("g.y.axis")
+                .transition()
+                .duration(500).ease("bounce")
+                .call(y);
 
         //update
     }//end update
@@ -187,8 +193,16 @@ function plot(params, initialize) {
             .data(params.data)
             .enter()
             .append("rect")
-            .classed("bar", true);
-
+            .classed("bar", true)
+            .on("mouseover", function (d, i) {
+                d3.select(this).style("fill","yellow");
+            })
+            .on("mousemove", function (d, i) {
+                
+            })
+            .on("mouseout", function (d, i) {
+                d3.select(this).style("fill",ordinalColorScale(i));
+            })
     this.selectAll(".bar-label")
             .data(params.data)
             .enter()
@@ -197,6 +211,7 @@ function plot(params, initialize) {
 
     //update
     this.selectAll(".bar")
+            .transition().duration(500).ease("bounce")
             .attr("x", function (d, i) {
                 return  x(d.key);
             })
@@ -215,6 +230,7 @@ function plot(params, initialize) {
 
 
     this.selectAll(".bar-label")
+            .transition().duration(500).ease("bounce")
             .attr("x", function (d, i) {
                 return  x(d.key) + (x.rangeBand() / 2);
             })
